@@ -1,4 +1,4 @@
-# terraform-lambda-function
+# terraform-aws-lambda-function
 Terraform module for a Lambda function with a standard configuration
 
 
