@@ -4,6 +4,12 @@ variable "environment" {
   type        = map(string)
 }
 
+variable "log_retention_in_days" {
+  description = "Number of days to keep function logs in Cloudwatch"
+  type        = number
+  default     = 7
+}
+
 variable "memory_size" {
   description = "Amount of memory (in MB) to allocate to the function"
   type        = number
@@ -31,8 +37,8 @@ variable "reserved_concurrent_executions" {
   default     = null
 }
 
-variable "role_arn" {
-  description = "Execution role for the function"
+variable "role_name" {
+  description = "Name of the execution role for the function. It does not need to include logging/networking permissions - those policies will be added automatically."
   type        = string
 }
 
