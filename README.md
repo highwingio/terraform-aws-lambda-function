@@ -17,7 +17,7 @@ This repo uses [terraform-docs](https://github.com/segmentio/terraform-docs) to 
 To regenerate, run this command:
 
 ```bash
-$ terraform-docs markdown --header-from ./README.tmpl.md . > README.md
+$ terraform-docs markdown table . > README.md
 ```
 
 ## Requirements

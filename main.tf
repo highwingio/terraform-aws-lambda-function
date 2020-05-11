@@ -18,7 +18,7 @@
  * To regenerate, run this command:
  *
  * ```bash
- * $ terraform-docs markdown --header-from ./README.tmpl.md . > README.md
+ * $ terraform-docs markdown table . > README.md
  * ```
  */
 
