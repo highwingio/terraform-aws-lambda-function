@@ -20,6 +20,7 @@ To regenerate, run this command:
 ```bash
 $ terraform-docs markdown --header-from ./README.tmpl.md . > README.md
 ```
+
 ## Requirements
 
 No requirements.
@@ -34,24 +35,24 @@ No requirements.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| deploy\_artifact\_key | n/a | `string` | `"deploy.zip"` | no |
 | environment | Environment variables to be passed to the function | `map(string)` | `{}` | no |
-| name | Name of the function | `string` | n/a | yes |
-| notifications\_topic\_arn | n/a | `string` | n/a | yes |
-| path | Path to the built artifact | `string` | n/a | yes |
-| reserved\_concurrent\_executions | n/a | `number` | `null` | no |
-| role\_arn | n/a | `string` | n/a | yes |
-| runtime | n/a | `string` | n/a | yes |
-| security\_group\_ids | Security groups for the function to run in | `list(string)` | `[]` | no |
-| subnet\_ids | VPC subnets for the function to run in | `list(string)` | `[]` | no |
-| timeout | n/a | `number` | `15` | no |
+| memory\_size | Amount of memory (in MB) to allocate to the function | `number` | `128` | no |
+| name | Name for the function | `string` | n/a | yes |
+| notifications\_topic\_arn | SNS topic to send error notifications | `string` | n/a | yes |
+| path | Local path to a zipped artifact containing the function code | `string` | n/a | yes |
+| reserved\_concurrent\_executions | Reserved concurrent executions (none by default) | `number` | `null` | no |
+| role\_arn | Execution role for the function | `string` | n/a | yes |
+| runtime | Language runtime for the function (https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html) | `string` | n/a | yes |
+| security\_group\_ids | Security groups for the function (if run in a VPC) | `list(string)` | `[]` | no |
+| subnet\_ids | Subnets for the function (if run in a VPC) | `list(string)` | `[]` | no |
+| timeout | Function timeout in seconds | `number` | `15` | no |
 
 ## Outputs
 
 | Name | Description |
 |------|-------------|
-| function\_arn | n/a |
-| function\_invoke\_arn | n/a |
-| function\_name | n/a |
-| function\_version | n/a |
+| function\_arn | ARN of the created/updated Lambda function |
+| function\_invoke\_arn | ARN for invoking the created Lambda function |
+| function\_name | Name of the created Lambda function |
+| function\_version | Version of the created/updated Lambda function |
 

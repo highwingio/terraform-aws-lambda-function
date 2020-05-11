@@ -1,54 +1,60 @@
-variable "deploy_artifact_key" {
-  default = "deploy.zip"
-  type    = string
-}
-
 variable "environment" {
   default     = {}
   description = "Environment variables to be passed to the function"
   type        = map(string)
 }
 
+variable "memory_size" {
+  description = "Amount of memory (in MB) to allocate to the function"
+  type        = number
+  default     = 128
+}
+
 variable "name" {
-  description = "Name of the function"
+  description = "Name for the function"
   type        = string
 }
 
 variable "notifications_topic_arn" {
-  type = string
+  description = "SNS topic to send error notifications"
+  type        = string
 }
 
 variable "path" {
-  description = "Path to the built artifact"
+  description = "Local path to a zipped artifact containing the function code"
   type        = string
 }
 
 variable "reserved_concurrent_executions" {
-  type    = number
-  default = null
+  type        = number
+  description = "Reserved concurrent executions (none by default)"
+  default     = null
 }
 
 variable "role_arn" {
-  type = string
+  description = "Execution role for the function"
+  type        = string
 }
 
 variable "runtime" {
-  type = string
+  type        = string
+  description = "Language runtime for the function (https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html)"
 }
 
 variable "security_group_ids" {
   type        = list(string)
-  description = "Security groups for the function to run in"
+  description = "Security groups for the function (if run in a VPC)"
   default     = []
 }
 
 variable "subnet_ids" {
   type        = list(string)
-  description = "VPC subnets for the function to run in"
+  description = "Subnets for the function (if run in a VPC)"
   default     = []
 }
 
 variable "timeout" {
-  type    = number
-  default = 15
+  type        = number
+  description = "Function timeout in seconds"
+  default     = 15
 }

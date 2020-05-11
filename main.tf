@@ -1,3 +1,8 @@
+locals {
+  deploy_artifact_key = "deploy.zip"
+}
+
+
 # S3 bucket for deploying Lambda artifacts
 # Not always required but it's more consistent for deploying larger files
 resource "aws_s3_bucket" "lambda_deploy" {
@@ -21,7 +26,7 @@ resource "aws_s3_bucket" "lambda_deploy" {
 # S3 object to hold the deployed artifact
 resource "aws_s3_bucket_object" "lambda_deploy_object" {
   bucket = aws_s3_bucket.lambda_deploy.id
-  key    = var.deploy_artifact_key
+  key    = local.deploy_artifact_key
   source = var.path
   etag   = filemd5(var.path)
 }
@@ -30,11 +35,11 @@ resource "aws_s3_bucket_object" "lambda_deploy_object" {
 resource "aws_lambda_function" "lambda" {
   function_name                  = var.name
   handler                        = "lambda.handler"
-  memory_size                    = 256
+  memory_size                    = var.memory_size
   publish                        = true
   reserved_concurrent_executions = var.reserved_concurrent_executions
   role                           = var.role_arn
-  runtime                        = "ruby2.5"
+  runtime                        = var.runtime
   s3_bucket                      = aws_s3_bucket.lambda_deploy.id
   s3_key                         = aws_s3_bucket_object.lambda_deploy_object.key
   s3_object_version              = aws_s3_bucket_object.lambda_deploy_object.version_id
