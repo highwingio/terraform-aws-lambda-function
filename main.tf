@@ -72,7 +72,7 @@ resource "aws_s3_bucket_object" "lambda_deploy_object" {
 # The Lambda function itself
 resource "aws_lambda_function" "lambda" {
   function_name                  = var.name
-  handler                        = "lambda.handler"
+  handler                        = var.handler
   memory_size                    = var.memory_size
   publish                        = true
   reserved_concurrent_executions = var.reserved_concurrent_executions

@@ -4,6 +4,11 @@ variable "environment" {
   type        = map(string)
 }
 
+variable "handler" {
+  description = "Name of the handler function inside the artifact (https://docs.aws.amazon.com/lambda/latest/dg/configuration-console.html)"
+  type        = string
+}
+
 variable "log_retention_in_days" {
   description = "Number of days to keep function logs in Cloudwatch"
   type        = number
