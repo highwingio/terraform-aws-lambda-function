@@ -41,6 +41,11 @@ resource "aws_iam_role_policy_attachment" "lambda_networking" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"
 }
 
+resource "aws_iam_role_policy_attachment" "lambda_xray" {
+  role       = data.aws_iam_role.lambda_execution_role.name
+  policy_arn = "arn:aws:iam::aws:policy/AWSXRayDaemonWriteAccess"
+}
+
 # S3 bucket for deploying Lambda artifacts
 # Not always required but it's more consistent for deploying larger files
 resource "aws_s3_bucket" "lambda_deploy" {
