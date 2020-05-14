@@ -129,7 +129,7 @@ resource "aws_cloudwatch_metric_alarm" "lambda_errors" {
 }
 
 # Configure logging in Cloudwatch
-resource "aws_cloudwatch_log_group" "example" {
+resource "aws_cloudwatch_log_group" "lambda" {
   name              = "/aws/lambda/${var.name}"
   retention_in_days = var.log_retention_in_days
 }
