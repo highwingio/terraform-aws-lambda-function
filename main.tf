@@ -97,8 +97,11 @@ resource "aws_lambda_function" "lambda" {
     }
   }
 
-  environment {
-    variables = var.environment
+  dynamic "environment" {
+    for_each = length(var.environment) > 0 ? [1] : []
+    content {
+      variables = var.environment
+    }
   }
 
   tracing_config {
