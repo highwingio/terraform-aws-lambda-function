@@ -22,27 +22,26 @@
  * ```
  */
 
+data "aws_caller_identity" "current" {}
+
 locals {
   deploy_artifact_key = "deploy.zip"
+  role_arn            = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/${var.role_name}"
 }
 
 # Configure default role permissions
-data "aws_iam_role" "lambda_execution_role" {
-  name = var.role_name
-}
-
 resource "aws_iam_role_policy_attachment" "lambda_basic_execution" {
-  role       = data.aws_iam_role.lambda_execution_role.name
+  role       = var.role_name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
 }
 
 resource "aws_iam_role_policy_attachment" "lambda_networking" {
-  role       = data.aws_iam_role.lambda_execution_role.name
+  role       = var.role_name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"
 }
 
 resource "aws_iam_role_policy_attachment" "lambda_xray" {
-  role       = data.aws_iam_role.lambda_execution_role.name
+  role       = var.role_name
   policy_arn = "arn:aws:iam::aws:policy/AWSXRayDaemonWriteAccess"
 }
 
@@ -81,7 +80,7 @@ resource "aws_lambda_function" "lambda" {
   memory_size                    = var.memory_size
   publish                        = true
   reserved_concurrent_executions = var.reserved_concurrent_executions
-  role                           = data.aws_iam_role.lambda_execution_role.arn
+  role                           = local.role_arn
   runtime                        = var.runtime
   s3_bucket                      = aws_s3_bucket.lambda_deploy.id
   s3_key                         = aws_s3_bucket_object.lambda_deploy_object.key
