@@ -87,6 +87,7 @@ resource "aws_lambda_function" "lambda" {
   s3_object_version              = aws_s3_bucket_object.lambda_deploy_object.version_id
   source_code_hash               = filebase64sha256(var.path)
   timeout                        = var.timeout
+  layers                         = var.layers
 
   dynamic "vpc_config" {
     for_each = length(var.subnet_ids) > 0 ? [1] : []

@@ -9,6 +9,12 @@ variable "handler" {
   type        = string
 }
 
+variable "layers" {
+  description = "List of Lambda Layer ARNs to apply to the function"
+  type        = list(string)
+  default     = []
+}
+
 variable "log_retention_in_days" {
   description = "Number of days to keep function logs in Cloudwatch"
   type        = number
