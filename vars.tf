@@ -4,6 +4,12 @@ variable "environment" {
   type        = map(string)
 }
 
+variable "error_rate_alarm_threshold" {
+  default     = 25
+  description = "Error rate (in percent, 1-100) at which to trigger an alarm notification"
+  type        = number
+}
+
 variable "handler" {
   description = "Name of the handler function inside the artifact (https://docs.aws.amazon.com/lambda/latest/dg/configuration-console.html)"
   type        = string

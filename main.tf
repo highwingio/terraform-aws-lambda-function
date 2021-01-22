@@ -111,24 +111,54 @@ resource "aws_lambda_function" "lambda" {
 
 # An alarm to notify of function errors
 resource "aws_cloudwatch_metric_alarm" "lambda_errors" {
+  alarm_actions       = [var.notifications_topic_arn]
+  alarm_description   = "This metric monitors the error rate on the ${var.name} lambda"
   alarm_name          = "${var.name} - High Error Rate"
   comparison_operator = "GreaterThanOrEqualToThreshold"
-  evaluation_periods  = "1"
-  metric_name         = "Errors"
-  namespace           = "AWS/Lambda"
-  period              = "60"
-  statistic           = "Sum"
-  threshold           = "1"
+  evaluation_periods  = "2"
+  ok_actions          = [var.notifications_topic_arn]
+  threshold           = var.error_rate_alarm_threshold
   treat_missing_data  = "notBreaching"
-  unit                = "Count"
 
-  dimensions = {
-    FunctionName = aws_lambda_function.lambda.function_name
+  metric_query {
+    id          = "error_rate"
+    expression  = "errors/invocations*100"
+    label       = "Error Rate"
+    return_data = "true"
   }
 
-  alarm_description = "This metric monitors errors on the ${var.name} lambda"
-  alarm_actions     = [var.notifications_topic_arn]
-  ok_actions        = [var.notifications_topic_arn]
+  metric_query {
+    id = "errors"
+
+    metric {
+      metric_name = "Errors"
+      namespace   = "AWS/Lambda"
+      period      = "60"
+      stat        = "Sum"
+      unit        = "Count"
+
+      dimensions = {
+        FunctionName = aws_lambda_function.lambda.function_name
+      }
+    }
+  }
+
+  metric_query {
+    id = "invocations"
+
+    metric {
+      metric_name = "Invocations"
+      namespace   = "AWS/Lambda"
+      period      = "60"
+      stat        = "Sum"
+      unit        = "Count"
+
+      dimensions = {
+        FunctionName = aws_lambda_function.lambda.function_name
+      }
+    }
+  }
+
 }
 
 # Configure logging in Cloudwatch
