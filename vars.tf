@@ -15,10 +15,10 @@ variable "handler" {
   type        = string
 }
 
-variable "layers" {
-  description = "List of Lambda Layer ARNs to apply to the function"
-  type        = list(string)
+variable "layer_arns" {
   default     = []
+  description = "List of ARNs for layers to use with the function"
+  type        = list(string)
 }
 
 variable "log_retention_in_days" {
