@@ -38,7 +38,7 @@ No requirements.
 | error\_rate\_alarm\_threshold | Error rate (in percent, 1-100) at which to trigger an alarm notification | `number` | `25` | no |
 | handler | Name of the handler function inside the artifact (https://docs.aws.amazon.com/lambda/latest/dg/configuration-console.html) | `string` | n/a | yes |
 | layer\_arns | List of ARNs for layers to use with the function | `list(string)` | `[]` | no |
-| log\_retention\_in\_days | Number of days to keep function logs in Cloudwatch | `number` | `7` | no |
+| log\_retention\_in\_days | Number of days to keep function logs in Cloudwatch | `number` | `365` | no |
 | memory\_size | Amount of memory (in MB) to allocate to the function | `number` | `128` | no |
 | name | Name for the function | `string` | n/a | yes |
 | notifications\_topic\_arn | SNS topic to send error notifications | `string` | n/a | yes |
