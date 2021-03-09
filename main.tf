@@ -83,18 +83,24 @@ data "aws_iam_policy_document" "lambda_deploy_bucket_policy" {
     actions = [
       "s3:*",
     ]
+
     effect = "Deny"
 
     resources = [
       aws_s3_bucket.lambda_deploy.arn,
       "${aws_s3_bucket.lambda_deploy.arn}/*",
     ]
+
     condition {
       test     = "Bool"
       variable = "aws:SecureTransport"
       values   = ["false"]
     }
-    principal = ["*"]
+
+    principals {
+      type        = "*"
+      identifiers = ["*"]
+    }
   }
 }
 
