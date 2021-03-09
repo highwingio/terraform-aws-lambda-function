@@ -65,6 +65,50 @@ resource "aws_s3_bucket" "lambda_deploy" {
   }
 }
 
+# Block public access to the deploy artifacts
+resource "aws_s3_bucket_public_access_block" "lambda_deploy" {
+  bucket = aws_s3_bucket.lambda_deploy.id
+
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
+}
+
+# Deny insecure requests for deploy artifacts
+data "aws_iam_policy_document" "lambda_deploy_bucket_policy" {
+  statement {
+    sid = "OnlyAllowSSLRequests"
+
+    actions = [
+      "s3:*",
+    ]
+
+    effect = "Deny"
+
+    resources = [
+      aws_s3_bucket.lambda_deploy.arn,
+      "${aws_s3_bucket.lambda_deploy.arn}/*",
+    ]
+
+    condition {
+      test     = "Bool"
+      variable = "aws:SecureTransport"
+      values   = ["false"]
+    }
+
+    principals {
+      type        = "*"
+      identifiers = ["*"]
+    }
+  }
+}
+
+resource "aws_s3_bucket_policy" "lambda_deploy" {
+  bucket = aws_s3_bucket.lambda_deploy.id
+  policy = data.aws_iam_policy_document.lambda_deploy_bucket_policy.json
+}
+
 # S3 object to hold the deployed artifact
 resource "aws_s3_bucket_object" "lambda_deploy_object" {
   bucket = aws_s3_bucket.lambda_deploy.id
