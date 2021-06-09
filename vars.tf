@@ -76,6 +76,12 @@ variable "subnet_ids" {
   default     = []
 }
 
+variable "tags" {
+  type        = map(any)
+  description = "Tags to apply to created resources"
+  default     = {}
+}
+
 variable "timeout" {
   type        = number
   description = "Function timeout in seconds"

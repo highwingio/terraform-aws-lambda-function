@@ -63,6 +63,8 @@ resource "aws_s3_bucket" "lambda_deploy" {
       }
     }
   }
+
+  tags = var.tags
 }
 
 # Block public access to the deploy artifacts
@@ -112,9 +114,10 @@ resource "aws_s3_bucket_policy" "lambda_deploy" {
 # S3 object to hold the deployed artifact
 resource "aws_s3_bucket_object" "lambda_deploy_object" {
   bucket = aws_s3_bucket.lambda_deploy.id
+  etag   = filemd5(var.path)
   key    = local.deploy_artifact_key
   source = var.path
-  etag   = filemd5(var.path)
+  tags   = var.tags
 }
 
 # The Lambda function itself
@@ -131,6 +134,7 @@ resource "aws_lambda_function" "lambda" {
   s3_key                         = aws_s3_bucket_object.lambda_deploy_object.key
   s3_object_version              = aws_s3_bucket_object.lambda_deploy_object.version_id
   source_code_hash               = filebase64sha256(var.path)
+  tags                           = var.tags
   timeout                        = var.timeout
 
   dynamic "vpc_config" {
@@ -203,10 +207,12 @@ resource "aws_cloudwatch_metric_alarm" "lambda_errors" {
     }
   }
 
+  tags = var.tags
 }
 
 # Configure logging in Cloudwatch
 resource "aws_cloudwatch_log_group" "lambda" {
   name              = "/aws/lambda/${var.name}"
   retention_in_days = var.log_retention_in_days
+  tags              = var.tags
 }

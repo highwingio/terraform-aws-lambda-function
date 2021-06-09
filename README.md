@@ -48,6 +48,7 @@ No requirements.
 | runtime | Language runtime for the function (https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html) | `string` | n/a | yes |
 | security\_group\_ids | Security groups for the function (if run in a VPC) | `list(string)` | `[]` | no |
 | subnet\_ids | Subnets for the function (if run in a VPC) | `list(string)` | `[]` | no |
+| tags | Tags to apply to created resources | `map` | `{}` | no |
 | timeout | Function timeout in seconds | `number` | `15` | no |
 
 ## Outputs
