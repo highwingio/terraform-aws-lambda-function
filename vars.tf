@@ -1,3 +1,9 @@
+variable "description" {
+	default     = null
+	description = "Description of the Lambda Function"
+	type        = string
+}
+
 variable "environment" {
   default     = {}
   description = "Environment variables to be passed to the function"
