@@ -55,6 +55,7 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
+| <a name="input_description"></a> [description](#input\_description) | Description of the Lambda Function | `string` | `null` | no |
 | <a name="input_environment"></a> [environment](#input\_environment) | Environment variables to be passed to the function | `map(string)` | `{}` | no |
 | <a name="input_error_rate_alarm_threshold"></a> [error\_rate\_alarm\_threshold](#input\_error\_rate\_alarm\_threshold) | Error rate (in percent, 1-100) at which to trigger an alarm notification | `number` | `25` | no |
 | <a name="input_handler"></a> [handler](#input\_handler) | Name of the handler function inside the artifact (https://docs.aws.amazon.com/lambda/latest/dg/configuration-console.html) | `string` | n/a | yes |

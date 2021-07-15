@@ -123,6 +123,7 @@ resource "aws_s3_bucket_object" "lambda_deploy_object" {
 # The Lambda function itself
 resource "aws_lambda_function" "lambda" {
   function_name                  = var.name
+  description                    = var.description
   handler                        = var.handler
   layers                         = var.layer_arns
   memory_size                    = var.memory_size
