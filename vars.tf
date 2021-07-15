@@ -1,7 +1,7 @@
 variable "description" {
-	default     = null
-	description = "Description of the Lambda Function"
-	type        = string
+  default     = null
+  description = "Description of the Lambda Function"
+  type        = string
 }
 
 variable "environment" {
