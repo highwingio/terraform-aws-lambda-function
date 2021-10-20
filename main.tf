@@ -45,6 +45,11 @@ resource "aws_iam_role_policy_attachment" "lambda_xray" {
   policy_arn = "arn:aws:iam::aws:policy/AWSXRayDaemonWriteAccess"
 }
 
+resource "aws_iam_role_policy_attachment" "lambda_insights" {
+  role       = var.role_name
+  policy_arn = "arn:aws:iam::aws:policy/CloudWatchLambdaInsightsExecutionRolePolicy"
+}
+
 # S3 bucket for deploying Lambda artifacts
 # Not always required but it's more consistent for deploying larger files
 resource "aws_s3_bucket" "lambda_deploy" {
@@ -122,10 +127,13 @@ resource "aws_s3_bucket_object" "lambda_deploy_object" {
 
 # The Lambda function itself
 resource "aws_lambda_function" "lambda" {
-  function_name                  = var.name
-  description                    = var.description
-  handler                        = var.handler
-  layers                         = var.layer_arns
+  function_name = var.name
+  description   = var.description
+  handler       = var.handler
+  layers = concat(
+    var.layer_arns,
+    ["arn:aws:lambda:us-east-1:580247275435:layer:LambdaInsightsExtension:14"] # ARN for us-east-1
+  )
   memory_size                    = var.memory_size
   publish                        = true
   reserved_concurrent_executions = var.reserved_concurrent_executions
