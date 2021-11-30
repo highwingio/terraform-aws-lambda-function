@@ -22,10 +22,9 @@
  * ```
  */
 
-data "aws_caller_identity" "current" {}
-
 locals {
   deploy_artifact_key = "deploy.zip"
+  source_hash         = coalesce(var.git_sha, filebase64sha256(var.path))
   role_arn            = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/${var.role_name}"
 }
 
@@ -118,11 +117,13 @@ resource "aws_s3_bucket_policy" "lambda_deploy" {
 
 # S3 object to hold the deployed artifact
 resource "aws_s3_bucket_object" "lambda_deploy_object" {
-  bucket = aws_s3_bucket.lambda_deploy.id
-  etag   = filemd5(var.path)
-  key    = local.deploy_artifact_key
-  source = var.path
-  tags   = var.tags
+  bucket      = data.aws_ssm_parameter.deployment_bucket_id.value
+  key         = "${var.name}/${local.deploy_artifact_key}"
+  source      = var.path
+  source_hash = md5(local.source_hash)
+  tags = merge(var.tags, {
+    GitSHA = var.git_sha
+  })
 }
 
 # The Lambda function itself
@@ -139,10 +140,9 @@ resource "aws_lambda_function" "lambda" {
   reserved_concurrent_executions = var.reserved_concurrent_executions
   role                           = local.role_arn
   runtime                        = var.runtime
-  s3_bucket                      = aws_s3_bucket.lambda_deploy.id
+  s3_bucket                      = data.aws_ssm_parameter.deployment_bucket_id.value
   s3_key                         = aws_s3_bucket_object.lambda_deploy_object.key
   s3_object_version              = aws_s3_bucket_object.lambda_deploy_object.version_id
-  source_code_hash               = filebase64sha256(var.path)
   tags                           = var.tags
   timeout                        = var.timeout
 
