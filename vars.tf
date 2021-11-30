@@ -16,6 +16,12 @@ variable "error_rate_alarm_threshold" {
   type        = number
 }
 
+variable "git_sha" {
+  type        = string
+  description = "Git SHA hash for lambda source code"
+  default     = null
+}
+
 variable "handler" {
   description = "Name of the handler function inside the artifact (https://docs.aws.amazon.com/lambda/latest/dg/configuration-console.html)"
   type        = string
