@@ -23,9 +23,10 @@
  */
 
 locals {
-  deploy_artifact_key = "deploy.zip"
-  source_hash         = coalesce(var.git_sha, filebase64sha256(var.path))
-  role_arn            = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/${var.role_name}"
+  deploy_artifact_key  = "deploy.zip"
+  deployment_bucket_id = coalesce(var.deployment_bucket_id, data.aws_ssm_parameter.deployment_bucket_id.value)
+  source_hash          = coalesce(var.git_sha, filebase64sha256(var.path))
+  role_arn             = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/${var.role_name}"
 }
 
 # Configure default role permissions
@@ -51,7 +52,7 @@ resource "aws_iam_role_policy_attachment" "lambda_insights" {
 
 # S3 object to hold the deployed artifact
 resource "aws_s3_bucket_object" "lambda_deploy_object" {
-  bucket      = data.aws_ssm_parameter.deployment_bucket_id.value
+  bucket      = local.deployment_bucket_id
   key         = "${var.name}/${local.deploy_artifact_key}"
   source      = var.path
   source_hash = md5(local.source_hash)
@@ -74,7 +75,7 @@ resource "aws_lambda_function" "lambda" {
   reserved_concurrent_executions = var.reserved_concurrent_executions
   role                           = local.role_arn
   runtime                        = var.runtime
-  s3_bucket                      = data.aws_ssm_parameter.deployment_bucket_id.value
+  s3_bucket                      = local.deployment_bucket_id
   s3_key                         = aws_s3_bucket_object.lambda_deploy_object.key
   s3_object_version              = aws_s3_bucket_object.lambda_deploy_object.version_id
   tags                           = var.tags
