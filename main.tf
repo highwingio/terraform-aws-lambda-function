@@ -108,7 +108,6 @@ resource "aws_cloudwatch_metric_alarm" "lambda_errors" {
   alarm_name          = "${var.name} - High Error Rate"
   comparison_operator = "GreaterThanOrEqualToThreshold"
   evaluation_periods  = "2"
-  ok_actions          = [var.notifications_topic_arn]
   threshold           = var.error_rate_alarm_threshold
   treat_missing_data  = "notBreaching"
 
@@ -125,7 +124,7 @@ resource "aws_cloudwatch_metric_alarm" "lambda_errors" {
     metric {
       metric_name = "Errors"
       namespace   = "AWS/Lambda"
-      period      = "60"
+      period      = "600"
       stat        = "Sum"
       unit        = "Count"
 
@@ -141,7 +140,7 @@ resource "aws_cloudwatch_metric_alarm" "lambda_errors" {
     metric {
       metric_name = "Invocations"
       namespace   = "AWS/Lambda"
-      period      = "60"
+      period      = "600"
       stat        = "Sum"
       unit        = "Count"
 
