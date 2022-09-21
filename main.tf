@@ -103,23 +103,23 @@ resource "aws_lambda_function" "lambda" {
   }
 
   precondition {
-    condition = (var.image_uri != null && var.path == null) || (var.image_uri == null && var.path != null)
+    condition     = (var.image_uri != null && var.path == null) || (var.image_uri == null && var.path != null)
     error_message = "Cannot specify image_uri AND path"
   }
   precondition {
-    condition = (var.image_uri != null && var.handler == null) || (var.image_uri == null && var.handler != null)
+    condition     = (var.image_uri != null && var.handler == null) || (var.image_uri == null && var.handler != null)
     error_message = "Cannot specify image_uri AND handler"
   }
   precondition {
-    condition = (var.image_uri != null && length(var.layer_arns) == 0) || (var.image_uri == null)
+    condition     = (var.image_uri != null && length(var.layer_arns) == 0) || (var.image_uri == null)
     error_message = "Cannot specify image_uri AND layer_arns"
   }
   precondition {
-    condition = (var.image_uri != null && var.path == null) || (var.image_uri == null && var.path != null)
+    condition     = (var.image_uri != null && var.path == null) || (var.image_uri == null && var.path != null)
     error_message = "Cannot specify image_uri AND path"
   }
   precondition {
-    condition = (var.image_uri != null && var.runtime == null) || (var.image_uri == null && var.path != null)
+    condition     = (var.image_uri != null && var.runtime == null) || (var.image_uri == null && var.path != null)
     error_message = "Cannot specify image_uri AND runtime"
   }
 }
