@@ -52,6 +52,7 @@ resource "aws_iam_role_policy_attachment" "lambda_insights" {
 
 # S3 object to hold the deployed artifact
 resource "aws_s3_bucket_object" "lambda_deploy_object" {
+  for_each    = var.image_uri == null ? [1] : []
   bucket      = local.deployment_bucket_id
   key         = "${var.name}/${local.deploy_artifact_key}"
   source      = var.path
@@ -66,18 +67,19 @@ resource "aws_lambda_function" "lambda" {
   function_name = var.name
   description   = var.description
   handler       = var.handler
-  layers = concat(
+  layers = var.image_uri == null ? concat(
     var.layer_arns,
     ["arn:aws:lambda:us-east-1:580247275435:layer:LambdaInsightsExtension:14"] # ARN for us-east-1
-  )
+  ) : null
   memory_size                    = var.memory_size
   publish                        = true
   reserved_concurrent_executions = var.reserved_concurrent_executions
   role                           = local.role_arn
   runtime                        = var.runtime
-  s3_bucket                      = local.deployment_bucket_id
-  s3_key                         = aws_s3_bucket_object.lambda_deploy_object.key
-  s3_object_version              = aws_s3_bucket_object.lambda_deploy_object.version_id
+  s3_bucket                      = var.image_uri == null ? local.deployment_bucket_id : null
+  s3_key                         = var.image_uri == null ? aws_s3_bucket_object.lambda_deploy_object[0].key : null
+  s3_object_version              = var.image_uri == null ? aws_s3_bucket_object.lambda_deploy_object[0].version_id : null
+  image_uri                      = var.image_uri
   tags                           = var.tags
   timeout                        = var.timeout
 
@@ -99,6 +101,30 @@ resource "aws_lambda_function" "lambda" {
   tracing_config {
     mode = "Active"
   }
+
+  lifecycle {
+    precondition {
+      condition     = (var.image_uri != null && var.path == null) || (var.image_uri == null && var.path != null)
+      error_message = "Cannot specify image_uri AND path"
+    }
+    precondition {
+      condition     = (var.image_uri != null && var.handler == null) || (var.image_uri == null && var.handler != null)
+      error_message = "Cannot specify image_uri AND handler"
+    }
+    precondition {
+      condition     = (var.image_uri != null && length(var.layer_arns) == 0) || (var.image_uri == null)
+      error_message = "Cannot specify image_uri AND layer_arns"
+    }
+    precondition {
+      condition     = (var.image_uri != null && var.path == null) || (var.image_uri == null && var.path != null)
+      error_message = "Cannot specify image_uri AND path"
+    }
+    precondition {
+      condition     = (var.image_uri != null && var.runtime == null) || (var.image_uri == null && var.path != null)
+      error_message = "Cannot specify image_uri AND runtime"
+    }
+  }
+
 }
 
 # An alarm to notify of function errors
