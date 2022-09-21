@@ -52,7 +52,7 @@ resource "aws_iam_role_policy_attachment" "lambda_insights" {
 
 # S3 object to hold the deployed artifact
 resource "aws_s3_bucket_object" "lambda_deploy_object" {
-  for_each = var.image_uri == null ? [1] : []
+  for_each    = var.image_uri == null ? [1] : []
   bucket      = local.deployment_bucket_id
   key         = "${var.name}/${local.deploy_artifact_key}"
   source      = var.path
@@ -79,7 +79,7 @@ resource "aws_lambda_function" "lambda" {
   s3_bucket                      = var.image_uri == null ? local.deployment_bucket_id : null
   s3_key                         = var.image_uri == null ? aws_s3_bucket_object.lambda_deploy_object.key : null
   s3_object_version              = var.image_uri == null ? aws_s3_bucket_object.lambda_deploy_object.version_id : null
-  image_uri = var.image_uri
+  image_uri                      = var.image_uri
   tags                           = var.tags
   timeout                        = var.timeout
 

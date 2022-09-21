@@ -5,9 +5,9 @@ variable "description" {
 }
 
 variable "image_uri" {
-  default = null
+  default     = null
   description = "Image URI of the ECR container image for the Lambda Function. Overrides the use of path variable & s3 deployment object"
-  type = string
+  type        = string
 }
 
 variable "deployment_bucket_id" {
@@ -35,7 +35,7 @@ variable "git_sha" {
 }
 
 variable "handler" {
-  default = null
+  default     = null
   description = "Name of the handler function inside the artifact (https://docs.aws.amazon.com/lambda/latest/dg/configuration-console.html)"
   type        = string
 }
@@ -69,7 +69,7 @@ variable "notifications_topic_arn" {
 }
 
 variable "path" {
-  default = null
+  default     = null
   description = "Local path to a zipped artifact containing the function code"
   type        = string
 }
@@ -86,7 +86,7 @@ variable "role_name" {
 }
 
 variable "runtime" {
-  default = null
+  default     = null
   type        = string
   description = "Language runtime for the function (https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html)"
 }
