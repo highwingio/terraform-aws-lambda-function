@@ -27,6 +27,26 @@ locals {
   deployment_bucket_id = coalesce(var.deployment_bucket_id, data.aws_ssm_parameter.deployment_bucket_id.value)
   source_hash          = coalesce(var.git_sha, filebase64sha256(var.path))
   role_arn             = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/${var.role_name}"
+  validation {
+    condition = (var.image_uri != null && var.path == null) || (var.image_uri == null && var.path != null)
+    error_message = "Cannot specify image_uri AND path"
+  }
+  validation {
+    condition = (var.image_uri != null && var.handler == null) || (var.image_uri == null && var.handler != null)
+    error_message = "Cannot specify image_uri AND handler"
+  }
+  validation {
+    condition = (var.image_uri != null && length(var.layer_arns) == 0) || (var.image_uri == null)
+    error_message = "Cannot specify image_uri AND layer_arns"
+  }
+  validation {
+    condition = (var.image_uri != null && var.path == null) || (var.image_uri == null && var.path != null)
+    error_message = "Cannot specify image_uri AND path"
+  }
+  validation {
+    condition = (var.image_uri != null && var.runtime == null) || (var.image_uri == null && var.path != null)
+    error_message = "Cannot specify image_uri AND runtime"
+  }
 }
 
 # Configure default role permissions
