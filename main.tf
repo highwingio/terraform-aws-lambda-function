@@ -102,26 +102,41 @@ resource "aws_lambda_function" "lambda" {
     mode = "Active"
   }
 
-  precondition {
-    condition     = (var.image_uri != null && var.path == null) || (var.image_uri == null && var.path != null)
-    error_message = "Cannot specify image_uri AND path"
+  lifecycle {
+    precondition {
+      condition     = (var.image_uri != null && var.path == null) || (var.image_uri == null && var.path != null)
+      error_message = "Cannot specify image_uri AND path"
+    }
   }
-  precondition {
-    condition     = (var.image_uri != null && var.handler == null) || (var.image_uri == null && var.handler != null)
-    error_message = "Cannot specify image_uri AND handler"
+
+  lifecycle {
+    precondition {
+      condition     = (var.image_uri != null && var.handler == null) || (var.image_uri == null && var.handler != null)
+      error_message = "Cannot specify image_uri AND handler"
+    }
   }
-  precondition {
-    condition     = (var.image_uri != null && length(var.layer_arns) == 0) || (var.image_uri == null)
-    error_message = "Cannot specify image_uri AND layer_arns"
+
+  lifecycle {
+    precondition {
+      condition     = (var.image_uri != null && length(var.layer_arns) == 0) || (var.image_uri == null)
+      error_message = "Cannot specify image_uri AND layer_arns"
+    }
   }
-  precondition {
-    condition     = (var.image_uri != null && var.path == null) || (var.image_uri == null && var.path != null)
-    error_message = "Cannot specify image_uri AND path"
+
+  lifecycle {
+    precondition {
+      condition     = (var.image_uri != null && var.path == null) || (var.image_uri == null && var.path != null)
+      error_message = "Cannot specify image_uri AND path"
+    }
   }
-  precondition {
-    condition     = (var.image_uri != null && var.runtime == null) || (var.image_uri == null && var.path != null)
-    error_message = "Cannot specify image_uri AND runtime"
+
+  lifecycle {
+    precondition {
+      condition     = (var.image_uri != null && var.runtime == null) || (var.image_uri == null && var.path != null)
+      error_message = "Cannot specify image_uri AND runtime"
+    }
   }
+
 }
 
 # An alarm to notify of function errors
