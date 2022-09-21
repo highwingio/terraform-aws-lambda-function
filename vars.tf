@@ -4,6 +4,16 @@ variable "description" {
   type        = string
 }
 
+variable "image_uri" {
+  default = null
+  description = "Image URI of the ECR container image for the Lambda Function. Overrides the use of path variable & s3 deployment object"
+  type = string
+
+  validation {
+    condition = (var.image_uri != null && var.path == null) || (var.image_uri == null && var.path != null)
+  }
+}
+
 variable "deployment_bucket_id" {
   default     = null
   description = "ID of S3 bucket that should store our deployment artifacts. Will use the /account/DEPLOYMENT_BUCKET_ID value from SSM unless specified otherwise."
@@ -29,14 +39,23 @@ variable "git_sha" {
 }
 
 variable "handler" {
+  default = null
   description = "Name of the handler function inside the artifact (https://docs.aws.amazon.com/lambda/latest/dg/configuration-console.html)"
   type        = string
+
+  validation {
+    condition = (var.image_uri != null && var.handler == null) || (var.image_uri == null && var.handler != null)
+  }
 }
 
 variable "layer_arns" {
   default     = []
   description = "List of ARNs for layers to use with the function"
   type        = list(string)
+
+  validation {
+    condition = (var.image_uri != null && length(var.layer_arns) == 0) || (var.image_uri == null)
+  }
 }
 
 variable "log_retention_in_days" {
@@ -62,8 +81,13 @@ variable "notifications_topic_arn" {
 }
 
 variable "path" {
+  default = null
   description = "Local path to a zipped artifact containing the function code"
   type        = string
+
+  validation {
+    condition = (var.image_uri != null && var.path == null) || (var.image_uri == null && var.path != null)
+  }
 }
 
 variable "reserved_concurrent_executions" {
@@ -78,8 +102,13 @@ variable "role_name" {
 }
 
 variable "runtime" {
+  default = null
   type        = string
   description = "Language runtime for the function (https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html)"
+
+  validation {
+    condition = (var.image_uri != null && var.runtime == null) || (var.image_uri == null && var.path != null)
+  }
 }
 
 variable "security_group_ids" {
