@@ -76,6 +76,7 @@ resource "aws_lambda_function" "lambda" {
   reserved_concurrent_executions = var.reserved_concurrent_executions
   role                           = local.role_arn
   runtime                        = var.runtime
+  package_type                   = var.image_uri == null ? "Zip" : "Image"
   s3_bucket                      = var.image_uri == null ? local.deployment_bucket_id : null
   s3_key                         = var.image_uri == null ? aws_s3_bucket_object.lambda_deploy_object[0].key : null
   s3_object_version              = var.image_uri == null ? aws_s3_bucket_object.lambda_deploy_object[0].version_id : null
