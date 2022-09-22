@@ -25,7 +25,7 @@
 locals {
   deploy_artifact_key  = "deploy.zip"
   deployment_bucket_id = coalesce(var.deployment_bucket_id, data.aws_ssm_parameter.deployment_bucket_id.value)
-  source_hash          = coalesce(var.git_sha, filebase64sha256(var.path))
+  source_hash          = coalesce(var.git_sha, try(filebase64sha256(var.path), null))
   role_arn             = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/${var.role_name}"
 }
 
@@ -52,7 +52,7 @@ resource "aws_iam_role_policy_attachment" "lambda_insights" {
 
 # S3 object to hold the deployed artifact
 resource "aws_s3_bucket_object" "lambda_deploy_object" {
-  for_each    = var.image_uri == null ? [1] : []
+  count       = var.image_uri == null ? 1 : 0
   bucket      = local.deployment_bucket_id
   key         = "${var.name}/${local.deploy_artifact_key}"
   source      = var.path
