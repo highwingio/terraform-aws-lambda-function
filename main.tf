@@ -25,7 +25,7 @@
 locals {
   deploy_artifact_key  = "deploy.zip"
   deployment_bucket_id = coalesce(var.deployment_bucket_id, data.aws_ssm_parameter.deployment_bucket_id.value)
-  source_hash          = coalesce(var.git_sha, filebase64sha256(var.path))
+  source_hash          = coalesce(var.git_sha, try(filebase64sha256(var.path), null))
   role_arn             = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/${var.role_name}"
 }
 
