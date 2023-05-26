@@ -49,7 +49,7 @@ variable "layer_arns" {
 variable "log_retention_in_days" {
   description = "Number of days to keep function logs in Cloudwatch"
   type        = number
-  default     = 365
+  default     = 1096
 }
 
 variable "memory_size" {
