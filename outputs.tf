@@ -1,19 +1,23 @@
-output "function_name" {
-  description = "Name of the created Lambda function"
-  value       = aws_lambda_function.lambda.function_name
+output "function_arn" {
+  value = module.lambda_function.lambda_function_arn
 }
 
-output "function_arn" {
-  description = "ARN of the created/updated Lambda function"
-  value       = aws_lambda_function.lambda.arn
+output "qualified_function_arn" {
+  value = module.lambda_function.lambda_function_qualified_arn
+}
+
+output "function_name" {
+  value = module.lambda_function.lambda_function_name
 }
 
 output "function_version" {
-  description = "Version of the created/updated Lambda function"
-  value       = aws_lambda_function.lambda.version
+  value = module.lambda_function.lambda_function_version
 }
 
-output "function_invoke_arn" {
-  description = "ARN for invoking the created Lambda function"
-  value       = aws_lambda_function.lambda.invoke_arn
+output "lambda_role_arn" {
+  value = module.lambda_function.lambda_role_arn
+}
+
+output "lambda_role_name" {
+  value = module.lambda_function.lambda_role_name
 }
