@@ -38,7 +38,7 @@ locals {
 
 module "lambda_function" {
   source  = "terraform-aws-modules/lambda/aws"
-  version = "7.2.6"
+  version = "8.1.2"
 
   function_name = var.function_name
   description   = local.description
