@@ -52,14 +52,14 @@ resource "aws_iam_role_policy_attachment" "lambda_insights" {
 
 # S3 object to hold the deployed artifact
 resource "aws_s3_object" "lambda_deploy_object" {
-    count       = var.image_uri == null ? 1 : 0
-    bucket      = local.deployment_bucket_id
-    key         = "${var.name}/${local.deploy_artifact_key}"
-    source      = var.path
-    etag        = md5(local.source_hash)
-    tags = merge(var.tags, {
-        GitSHA = var.git_sha
-    })
+  count  = var.image_uri == null ? 1 : 0
+  bucket = local.deployment_bucket_id
+  key    = "${var.name}/${local.deploy_artifact_key}"
+  source = var.path
+  etag   = md5(local.source_hash)
+  tags = merge(var.tags, {
+    GitSHA = var.git_sha
+  })
 }
 
 # The Lambda function itself
