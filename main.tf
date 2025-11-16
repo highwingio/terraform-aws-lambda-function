@@ -51,15 +51,15 @@ resource "aws_iam_role_policy_attachment" "lambda_insights" {
 }
 
 # S3 object to hold the deployed artifact
-resource "aws_s3_bucket_object" "lambda_deploy_object" {
-  count       = var.image_uri == null ? 1 : 0
-  bucket      = local.deployment_bucket_id
-  key         = "${var.name}/${local.deploy_artifact_key}"
-  source      = var.path
-  source_hash = md5(local.source_hash)
-  tags = merge(var.tags, {
-    GitSHA = var.git_sha
-  })
+resource "aws_s3_object" "lambda_deploy_object" {
+    count       = var.image_uri == null ? 1 : 0
+    bucket      = local.deployment_bucket_id
+    key         = "${var.name}/${local.deploy_artifact_key}"
+    source      = var.path
+    etag        = md5(local.source_hash)
+    tags = merge(var.tags, {
+        GitSHA = var.git_sha
+    })
 }
 
 # The Lambda function itself
@@ -78,8 +78,8 @@ resource "aws_lambda_function" "lambda" {
   runtime                        = var.runtime
   package_type                   = var.image_uri == null ? "Zip" : "Image"
   s3_bucket                      = var.image_uri == null ? local.deployment_bucket_id : null
-  s3_key                         = var.image_uri == null ? aws_s3_bucket_object.lambda_deploy_object[0].key : null
-  s3_object_version              = var.image_uri == null ? aws_s3_bucket_object.lambda_deploy_object[0].version_id : null
+  s3_key                         = var.image_uri == null ? aws_s3_object.lambda_deploy_object[0].key : null
+  s3_object_version              = var.image_uri == null ? aws_s3_object.lambda_deploy_object[0].version_id : null
   image_uri                      = var.image_uri
   tags                           = var.tags
   timeout                        = var.timeout
